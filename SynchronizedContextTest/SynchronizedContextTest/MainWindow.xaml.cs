@@ -75,7 +75,7 @@ namespace SynchronizedContextTest
                 context?.Post(UpdateProgress, progress);
             };
 
-            var task = DownloadAsync(client, new Uri("http://ftp.byfly.by/test/10mb.txt"), _cancellationTokenSource.Token);
+            var task = DownloadAsync(client, new Uri("http://ftp.byfly.by/test/0mb.txt"), _cancellationTokenSource.Token);
             context?.Post(UpdateStatus, "Downloading");
 
             try
@@ -85,14 +85,13 @@ namespace SynchronizedContextTest
             }
             catch (TaskCanceledException exception)
             {
-                Console.WriteLine(exception.Message);
+                Debug.WriteLine(exception.Message);
                 context?.Post(UpdateStatus, "Canceled");
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
+                Debug.WriteLine(exception.Message);
                 context?.Post(UpdateStatus, "Faulted");
-                throw;
             }
         }
 
