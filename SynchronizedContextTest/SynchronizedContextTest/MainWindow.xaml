@@ -1,0 +1,28 @@
+﻿<Window x:Class="SynchronizedContextTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SynchronizedContextTest"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="336.807" Width="322.753">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="227*"/>
+                <ColumnDefinition Width="88*"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar Grid.Column="0" Name="ProgressBar" Margin="20, 40, 20, 40" />
+            <Label Margin="0,30,0,30" Grid.Column="1" Name="StatusLabel" Content="Waiting" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Label>
+
+        </Grid>
+        <Button Name="StartButton" Grid.Row="0" Margin="100,30,100,30" Content="Start" Click="Button_Click"/>
+        <Button Name="CancelButton" Grid.Row="1"  Margin="100,30,100,30" Content="Cancel" Click="CancelButton_Click"/>
+    </Grid>
+</Window>
