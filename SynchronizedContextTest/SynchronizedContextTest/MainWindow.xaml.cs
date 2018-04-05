@@ -45,7 +45,7 @@ namespace SynchronizedContextTest
             {
                 client.DownloadStringAsync(uri);
 
-                return await taskCompletionSource.Task;
+                return taskCompletionSource.Task.Result;
             }
         }
 
@@ -75,22 +75,34 @@ namespace SynchronizedContextTest
                 context?.Post(UpdateProgress, progress);
             };
 
-            try
-            {
                 context?.Post(UpdateStatus, "Downloading");
-                Debug.WriteLine(await DownloadAsync(client, new Uri("http://ftp.byfly.by/test/10mb.txt"), _cancellationTokenSource.Token));
-                context?.Post(UpdateStatus, "Succeeded");
-            }
-            catch (TaskCanceledException exception)
-            {
-                Debug.WriteLine(exception.Message);
-                context?.Post(UpdateStatus, "Canceled");
-            }
-            catch (Exception exception)
-            {
-                Debug.WriteLine(exception.Message);
-                context?.Post(UpdateStatus, "Faulted");
-            }
+#pragma warning disable 4014
+                DownloadAsync(client, new Uri("http://ftp.byfly.by/test/0mb.txt"), _cancellationTokenSource.Token)
+                    .ContinueWith(
+#pragma warning restore 4014
+                        task =>
+                        {
+                            try
+                            {
+                                Debug.WriteLine(task.Result);
+                            }
+                            catch (AggregateException exception)
+                            {
+                                if (exception.InnerException?.InnerException is TaskCanceledException)
+                                {
+                                    Debug.WriteLine(exception.InnerException.InnerException.Message);
+                                    context?.Post(UpdateStatus, "Canceled");
+
+                                    return;
+                                }
+                                Debug.WriteLine(exception.InnerException?.InnerException?.Message);
+                                context?.Post(UpdateStatus, "Faulted");
+
+                                return;
+                            }
+                            context?.Post(UpdateStatus, "Succeeded");
+                        });
+            
         }
 
         private void UpdateProgress(object state)
